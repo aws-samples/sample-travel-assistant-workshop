@@ -183,10 +183,14 @@ python backend.py
 
 Open `http://localhost:8000` in your browser. The app supports multi-turn conversations with session persistence.
 
-To point the React dev server at a different backend (e.g., remote), set `REACT_APP_API_URL`:
+> **Security:** The backend has no authentication and calls the supervisor agent with your AWS credentials, so it listens on `127.0.0.1` only. It also rejects requests whose `Host` header isn't `localhost` or `127.0.0.1`, and allows cross-origin calls only from the React dev server (`http://localhost:3000`). Don't change it to listen on `0.0.0.0`.
+
+If the backend runs on a remote machine (e.g., an EC2 instance), forward the port over SSH instead of exposing it, then open `http://localhost:8000` locally:
 ```bash
-REACT_APP_API_URL=http://<remote-host>:8000 npm start
+ssh -L 8000:localhost:8000 <user>@<remote-host>
 ```
+
+The React dev server (`npm start`, port 3000) talks to the backend at `http://localhost:8000` by default. To use a different origin for the dev server, set `CORS_ALLOWED_ORIGINS` (comma-separated) when starting `backend.py`.
 
 ## Agent System Prompts
 
